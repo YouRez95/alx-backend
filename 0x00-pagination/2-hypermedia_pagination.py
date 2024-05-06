@@ -52,10 +52,12 @@ class Server:
             returns a dictionary containing key-value pairs
         """
         data = self.get_page(page, page_size)
-        next_page = None if len(data) == 0 else page + 1
+        length = len(self.dataset())
         prev_page = None if page == 1 else page - 1
-        total_pages = int(math.ceil(len(self.dataset()) / page_size))
-        page_size = 0 if len(data) == 0 else page_size
+        total_pages = int(math.ceil(length / page_size))
+        next_page = (None if len(data) == 0
+                     or page * page_size >= length else page + 1)
+        page_size = len(data)
         final_data = {'page_size': page_size, 'page': page,
                       'data': data, 'next_page': next_page,
                       'prev_page': prev_page, 'total_pages': total_pages}
