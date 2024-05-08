@@ -24,6 +24,8 @@ class LRUCache(BaseCaching):
         '''
             Add an item to the cache
         '''
+        if not key or not item:
+            return
         if self.MAX_ITEMS == len(self.tracking):
             evicted = self.tracking[0]
             del self.cache_data[evicted]
