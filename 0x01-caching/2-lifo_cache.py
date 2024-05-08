@@ -1,15 +1,14 @@
 #!/usr/bin/python3
 """
-    FIFOCache module
+    LIFOCache module
 """
 from base_caching import BaseCaching
-from collections import deque
 
 
-class FIFOCache(BaseCaching):
+class LIFOCache(BaseCaching):
     '''
-        FIFOCache is a caching system
-        that use the FIFO data structure
+       LIFOCache is a class for caching
+       use the LIFO data structure
     '''
 
     def __init__(self):
@@ -17,7 +16,7 @@ class FIFOCache(BaseCaching):
             Inherit the cache data from parent class
         '''
         super().__init__()
-        self.queue = deque()
+        self.queue = []
 
     def put(self, key, item):
         '''
@@ -30,7 +29,7 @@ class FIFOCache(BaseCaching):
             del self.cache_data[deleted_key]
             print('DISCARD: {}'.format(deleted_key))
         self.cache_data[key] = item
-        self.queue.appendleft(key)
+        self.queue.append(key)
 
     def get(self, key):
         '''
