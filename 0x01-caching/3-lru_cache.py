@@ -24,6 +24,8 @@ class LRUCache(BaseCaching):
         '''
             Add an item to the cache
         '''
+        if key is None or item is None:
+            return
         if key in self.cache_data:
             self.cache_data[key] = item
             index = self.tracking.index(key)
