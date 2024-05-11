@@ -3,11 +3,13 @@
     LRUCache module
 """
 from base_caching import BaseCaching
+from collections import deque
 
 
 class LFUCache(BaseCaching):
     '''
-       MRUCache is a caching algorithm
+       LFUCache is a caching algorithm that remove
+       the least frequently used element by LRU
     '''
 
     def __init__(self):
@@ -15,40 +17,55 @@ class LFUCache(BaseCaching):
             Inherit the cache data from parent class
         '''
         super().__init__()
-        self.tracking = []
+        self.tracking = {1: deque()}
 
     def put(self, key, item):
         '''
             Add an item to the cache
         '''
-        if not key or not item:
+        if key is None or item is None:
             return
-        if key in self.tracking:
-            index = self.tracking.index(key)
-            for i in range(index, self.MAX_ITEMS):
-                if i + 1 < self.MAX_ITEMS:
-                    self.tracking[i] = self.tracking[i + 1]
-            return
-        if self.MAX_ITEMS == len(self.tracking):
-            evicted = self.tracking.pop()
-            print('DISCARD: {}'.format(evicted))
-            self.tracking.append(key)
-            del self.cache_data[evicted]
+        exist = False
+        for frequency in list(self.tracking.keys()):
+            if key in self.tracking[frequency]:
+                exist = True
+                if frequency + 1 not in list(self.tracking.keys()):
+                    self.tracking[frequency + 1] = deque()
+                self.tracking[frequency].remove(key)
+                self.tracking[frequency + 1].appendleft(key)
+                self.clean_tracking(frequency)
+                self.cache_data[key] = item
+                break
+        if not exist:
+            if len(list(self.cache_data.keys())) == self.MAX_ITEMS:
+                least_frequency = sorted(self.tracking.keys())[0]
+                evicted_key = self.tracking[least_frequency].pop()
+                self.clean_tracking(least_frequency)
+                print("DISCARD:", evicted_key)
+                del self.cache_data[evicted_key]
+            if 1 not in list(self.tracking.keys()):
+                self.tracking[1] = deque()
+            self.tracking[1].appendleft(key)
             self.cache_data[key] = item
-        else:
-            self.cache_data[key] = item
-            self.tracking.append(key)
 
     def get(self, key):
         '''
             Get an item from the cache
         '''
-        if not key or key not in self.cache_data:
+        if key not in self.cache_data.keys():
             return None
-        # self.tracking.
-        index = self.tracking.index(key)
-        for i in range(index, self.MAX_ITEMS):
-            if i + 1 < self.MAX_ITEMS:
-                self.tracking[i] = self.tracking[i + 1]
-        self.tracking[self.MAX_ITEMS - 1] = key
+        for frequency in list(self.tracking.keys()):
+            if key in self.tracking[frequency]:
+                if frequency + 1 not in list(self.tracking.keys()):
+                    self.tracking[frequency + 1] = deque()
+                self.tracking[frequency].remove(key)
+                self.tracking[frequency + 1].appendleft(key)
+                self.clean_tracking(frequency)
         return self.cache_data[key]
+
+    def clean_tracking(self, frequency):
+        '''
+            clean the tracking data
+        '''
+        if not self.tracking[frequency]:
+            self.tracking.pop(frequency)
