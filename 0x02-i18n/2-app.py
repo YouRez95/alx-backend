@@ -22,6 +22,11 @@ app.config.from_object(Config)
 babel = Babel(app)
 
 
+@babel.localselector
+def get_locale():
+    request.accept_languages.best_match(["en", "fr"])
+
+
 @app.route('/')
 def home_route() -> str:
     '''
