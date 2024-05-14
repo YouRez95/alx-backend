@@ -32,6 +32,9 @@ users = {
 
 
 def get_user(user_id, users) -> Union[Dict, None]:
+    '''
+        get user from users
+    '''
     if user_id and int(user_id) in users.keys():
         return users[int(user_id)]
     return None
@@ -39,6 +42,9 @@ def get_user(user_id, users) -> Union[Dict, None]:
 
 @app.before_request
 def before_request() -> None:
+    '''
+        insert the user into g
+    '''
     user_id = request.args.get('login_as')
     user = get_user(user_id, users)
     g.user = user
