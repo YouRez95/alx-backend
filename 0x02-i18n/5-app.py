@@ -4,6 +4,7 @@
 '''
 
 
+from typing import Dict, Union
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
 
@@ -30,14 +31,14 @@ users = {
 }
 
 
-def get_user(user_id, users):
+def get_user(user_id, users) -> Union[Dict, None]:
     if user_id and int(user_id) in users.keys():
         return users[int(user_id)]
     return None
 
 
 @app.before_request
-def before_request():
+def before_request() -> None:
     user_id = request.args.get('login_as')
     user = get_user(user_id, users)
     g.user = user
