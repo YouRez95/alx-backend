@@ -5,12 +5,13 @@
 
 
 from flask import Flask, render_template
+from flask.typing import ResponseReturnValue
 
 app = Flask(__name__)
 
 
 @app.route('/')
-def home_route():
+def home_route() -> ResponseReturnValue:
     '''
         function that serve the route /
     '''
