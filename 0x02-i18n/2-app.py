@@ -22,9 +22,11 @@ app.config.from_object(Config)
 babel = Babel(app)
 
 
-@babel.localselector
 def get_locale():
-    request.accept_languages.best_match(["en", "fr"])
+    request.accept_languages.best_match(app.config['LANGUAGES'])
+
+
+babel.init_app(app, locale_selector=get_locale)
 
 
 @app.route('/')
@@ -32,7 +34,7 @@ def home_route() -> str:
     '''
         function that serve the route /
     '''
-    return render_template('0-index.html')
+    return render_template('2-index.html')
 
 
 if __name__ == "__main__":
