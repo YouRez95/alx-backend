@@ -6,10 +6,10 @@ const queue = createQueue();
 
 
 const job = queue.create('push_notification_code', {
-  phoneNumber: '+2126666666666',
-  message: 'HELLO',
+  phoneNumber: '4153518781',
+  message: 'This is the code to verify your account',
 }).save((err) => {
-  console.log('Notification job created: ', job.id)
+  if (!err) console.log('Notification job created: ', job.id)
 })
 
 job.on('complete', function(result){
